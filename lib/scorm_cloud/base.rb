@@ -16,7 +16,7 @@ module ScormCloud
 		def call_raw(method, params = {})
 			url = prepare_url(method, params)
 			execute_call_plain(url)
-		end			
+		end
 
 		def call_url(url)
 			execute_call_plain(url)
@@ -82,7 +82,7 @@ module ScormCloud
 			end
 		end
 
-	
+
 		# Create an exception with code & message
 		def create_error(doc, url)
 			err = doc.elements["rsp"].elements["err"]
@@ -96,7 +96,7 @@ module ScormCloud
 		def self.add_service(hash)
 			hash.each do |name, klass|
 				define_method(name) do
-					service = instance_variable_get("@#{name.to_s}") 
+					service = instance_variable_get("@#{name.to_s}")
 					unless service
 						service = instance_variable_set("@#{name.to_s}", klass.new(self))
 					end
