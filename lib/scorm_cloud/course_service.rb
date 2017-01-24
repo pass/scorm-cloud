@@ -3,13 +3,13 @@ module ScormCloud
 
 		not_implemented :import_cours_async, :get_async_import_result,
 				:properties, :get_assets, :update_assets,
-				:get_file_structure, :delete_files, :get_metadata
+				:get_file_structure, :delete_files
 
 		# TODO: Handle Warnings
 		def import_course(course_id, path)
 			xml = connection.call("rustici.course.importCourse", :courseid => course_id, :path => path)
 			if xml.elements['//rsp/importresult'].attributes["successful"] == "true"
-				title = xml.elements['//rsp/importresult/title'].text	
+				title = xml.elements['//rsp/importresult/title'].text
 				{ :title => title, :warnings => [] }
 			else
 				nil
@@ -34,6 +34,11 @@ module ScormCloud
 		 	connection.call_raw("rustici.course.getManifest", :courseid => course_id)
 		end
 
+		def get_metadata(course_id, scope="course")
+			raise "Illegal scope argument: #{scope}" unless ["course","activity"].include?(scope)
+		 	connection.call_raw("rustici.course.getMetadata", { :courseid => course_id, :scope => scope })
+		end
+
 		def get_course_list(options = {})
 			xml = connection.call("rustici.course.getCourseList", options)
 			xml.elements["/rsp/courselist"].map { |e| Course.from_xml(e) }
@@ -50,4 +55,3 @@ module ScormCloud
 
 	end
 end
-
